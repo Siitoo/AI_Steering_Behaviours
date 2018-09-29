@@ -30,19 +30,25 @@ public class SteeringArrive : MonoBehaviour {
         // before sending it to move.AccelerateMovement() clamp it to 
         // move.max_mov_acceleration
 
+        Vector3 distance = move.target.transform.position - transform.position;
+        distance.y = 0;
+        distance.Normalize();
+
+        Vector3 acceleration = distance;
         float distance_to_target = Vector3.Distance(transform.position, target);
+
         if (distance_to_target <= slow_distance) 
         {
-            // Normalize = direction, distance = lenght, time = ideal velocity.
             Vector3 ideal_vector = move.movement.normalized * distance_to_target * time_to_target;
-            Vector3 current_velocity = move.movement;
-            Vector3 acceleration = (ideal_vector - current_velocity)*move.max_mov_acceleration;
+
+            acceleration = ideal_vector - move.movement * time_to_target;
 
             if (distance_to_target <= min_distance)
-                move.SetMovementVelocity(Vector3.zero);
-            else
-                move.AccelerateMovement(acceleration);
+               acceleration = -move.movement;
         }
+      
+        
+        move.AccelerateMovement(acceleration);
 
     }
 

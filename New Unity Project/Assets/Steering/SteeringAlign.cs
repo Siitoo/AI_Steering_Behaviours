@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+
 public class SteeringAlign : MonoBehaviour {
 
 	public float min_angle = 0.01f;
@@ -20,21 +21,28 @@ public class SteeringAlign : MonoBehaviour {
         // TODO 4: As with arrive, we first construct our ideal rotation
         // then accelerate to it. Use Mathf.DeltaAngle() to wrap around PI
         // Is the same as arrive but with angular velocities
-        float current_angle = 2 * Mathf.Acos(transform.rotation.w);
-        float target_angle = 2 * Mathf.Acos(move.target.transform.rotation.w);
 
-        float angle_to_target = Mathf.DeltaAngle(current_angle,target_angle);
 
-        if(angle_to_target <= slow_angle)
+        float current_angle = Mathf.Atan2(transform.forward.x,transform.forward.z) * Mathf.Rad2Deg;
+        float target_angle =  Mathf.Atan2(move.movement.x,move.movement.z) * Mathf.Rad2Deg;
+
+        float angle_to_target = Mathf.DeltaAngle(current_angle, target_angle);
+
+        if (Mathf.Abs(angle_to_target) < slow_angle)
         {
-            float ideal_angle = Mathf.LerpAngle(min_angle, angle_to_target, time_to_target);
-            float acceleration_angle = Mathf.MoveTowardsAngle(ideal_angle, angle_to_target,move.max_rot_acceleration);
+            float ideal_angle = Mathf.LerpAngle(current_angle, target_angle, time_to_target);
+            float x = angle_to_target * time_to_target;
 
-            if (angle_to_target <= min_angle)
-                move.SetRotationVelocity(0);
-            else
-                move.AccelerateRotation(acceleration_angle);
+            if (Mathf.Abs(ideal_angle) < min_angle)
+            {
+                angle_to_target = -move.max_rot_acceleration;
+               
+            }
         }
-        //NOT FINISH
-	}
+        else
+            angle_to_target *= move.max_rot_acceleration;
+
+        move.AccelerateRotation(angle_to_target);
+
+    }
 }
