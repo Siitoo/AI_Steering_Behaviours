@@ -4,27 +4,41 @@ using System.Collections;
 public class SteeringWander : MonoBehaviour {
 
 	public float min_distance = 0.1f;
-	public float time_to_target = 0.25f;
+	public float time_to_target = 1.0f;
 
-	Move move;
 
-	// Use this for initialization
-	void Start () {
-		move = GetComponent<Move>();
+    public float distanceToCircle = 4.0f;
+    public float circleRadius = 1.0f;
+    public float wanderRate = 0.1f;
+    private SteeringSeek seek;
+
+    private Vector3 target = Vector3.zero;
+
+    private float timer = 0.0f;
+
+    // Use this for initialization
+    void Start () {
+        seek = GetComponent<SteeringSeek>();
 	}
 
 	// Update is called once per frame
 	void Update () 
 	{
-		Vector3 diff = move.target.transform.position - transform.position;
+        if (timer >= wanderRate)
+        {
+            // Update the target
+            Vector3 Direction = new Vector3(Random.Range(-1.0f, 1.0f), 0.0f, Random.Range(-1.0f, 1.0f));
 
-		if(diff.magnitude < min_distance)
-			return;
+            Vector3 circlePosition = transform.position + transform.forward * distanceToCircle;
+            target = circlePosition + Direction * circleRadius;
 
-		diff /= time_to_target;
+            timer = 0.0f;
+        }
 
-		move.AccelerateMovement(diff);
-	}
+        timer += Time.deltaTime;
+
+        seek.Steer(target);
+    }
 
 	void OnDrawGizmosSelected() 
 	{

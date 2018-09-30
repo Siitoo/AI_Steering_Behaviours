@@ -4,7 +4,7 @@ using System.Collections;
 public class SteeringSeek : MonoBehaviour {
 
 	Move move;
-    private float acceleration = 0.0f;
+   
 
 	// Use this for initialization
 	void Start () {
@@ -22,7 +22,7 @@ public class SteeringSeek : MonoBehaviour {
         // TODO 1: accelerate towards our target at max_acceleration
         // use move.AccelerateMovement()
 
-        Vector3 distance = move.target.transform.position - transform.position;
+        Vector3 distance = target - transform.position;
         distance.y = 0;
         distance.Normalize();
 
