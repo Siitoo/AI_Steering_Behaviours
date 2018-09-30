@@ -30,27 +30,43 @@ public class SteeringArrive : MonoBehaviour {
         // before sending it to move.AccelerateMovement() clamp it to 
         // move.max_mov_acceleration
 
-        Vector3 distance = move.target.transform.position - transform.position;
-        distance.y = 0;
-        distance.Normalize();
+        /* Vector3 distance = move.target.transform.position - transform.position;
+         distance.y = 0;
+         distance.Normalize();
 
-        Vector3 acceleration = distance;
-        float distance_to_target = Vector3.Distance(transform.position, target);
+         Vector3 acceleration = distance;
+         float distance_to_target = Vector3.Distance(transform.position, target);
 
-        if (distance_to_target <= slow_distance) 
-        {
-            Vector3 ideal_vector = move.movement.normalized * distance_to_target * time_to_target;
+         if (distance_to_target <= slow_distance) 
+         {
+             Vector3 ideal_vector = move.movement.normalized * distance_to_target * time_to_target;
 
-            acceleration = ideal_vector - move.movement * time_to_target;
+             acceleration = ideal_vector - move.movement * time_to_target;
 
-            if (distance_to_target <= min_distance)
-               acceleration = -move.movement;
-        }
-      
-        
-        move.AccelerateMovement(acceleration);
+             if (distance_to_target <= min_distance)
+                acceleration = -move.movement;
+         }
+
+
+         move.AccelerateMovement(acceleration);*/
+
+        Vector3 desiredVelocity = target - transform.position;
+        float distance = desiredVelocity.magnitude;
+
+        if (distance < slow_distance)
+            desiredVelocity = Vector3.Normalize(desiredVelocity) * move.max_mov_velocity * (distance / slow_distance);
+        else
+            desiredVelocity = Vector3.Normalize(desiredVelocity) * move.max_mov_velocity;
+
+        Vector3 steering = desiredVelocity - move.movement;
+
+        move.AccelerateMovement(steering);
 
     }
+
+
+
+
 
 	void OnDrawGizmosSelected() 
 	{
