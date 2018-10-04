@@ -4,11 +4,10 @@ using System.Collections;
 public class SteeringSeek : MonoBehaviour {
 
 	Move move;
-   
 
 	// Use this for initialization
 	void Start () {
-		move = GetComponent<Move>();
+		move = GetComponent<Move>(); 
 	}
 	
 	// Update is called once per frame
@@ -19,17 +18,13 @@ public class SteeringSeek : MonoBehaviour {
 
 	public void Steer(Vector3 target)
 	{
-        // TODO 1: accelerate towards our target at max_acceleration
-        // use move.AccelerateMovement()
+		if(!move)
+			move = GetComponent<Move>();
 
-        Vector3 distance = target - transform.position;
-        distance.y = 0;
-        distance.Normalize();
+		Vector3 diff = target - transform.position;
+		diff.Normalize ();
+		diff *= move.max_mov_acceleration;
 
-        distance *= move.max_mov_acceleration;
-        move.AccelerateMovement(distance);
-
-
-       
-    }
+		move.AccelerateMovement(diff);
+	}
 }

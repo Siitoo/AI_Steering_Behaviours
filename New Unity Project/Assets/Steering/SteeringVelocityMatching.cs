@@ -19,19 +19,21 @@ public class SteeringVelocityMatching : MonoBehaviour {
 	{
 		if(target_move)
 		{
-            // TODO 5: First come up with your ideal velocity
-            // then accelerate to it.
+			// Create a vector that describes the ideal velocity
+			Vector3 ideal_movement = transform.forward * target_move.movement.magnitude;
 
-            // float x = target_move.transform.position.x - move.transform.position.x;
+			// Calculate acceleration needed to match that velocity
+			Vector3 acceleration = ideal_movement - move.movement;
+			acceleration /= time_to_target;
 
-            Vector3 ideal_velocity = target_move.movement - move.movement + (target_move.movement * target_move.max_mov_velocity * time_to_target);
-            float g = target_move.movement.magnitude;
+			// Cap acceleration
+			if(acceleration.magnitude > move.max_mov_acceleration)
+			{
+				acceleration.Normalize();
+				acceleration *= move.max_mov_acceleration;
+			}
 
-            ideal_velocity . z = g;
-            ideal_velocity.y = 0;
-            ideal_velocity.x = 0;
-         
-            move.AccelerateMovement(ideal_velocity);
-        }
+			move.AccelerateMovement(acceleration);
+		}
 	}
 }

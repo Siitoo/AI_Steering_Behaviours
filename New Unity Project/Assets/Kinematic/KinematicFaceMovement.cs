@@ -16,6 +16,9 @@ public class KinematicFaceMovement : MonoBehaviour {
 	void Update () 
 	{
 		float target_degrees = Mathf.Atan2(move.movement.x, move.movement.z) * Mathf.Rad2Deg;
+		//transform.eulerAngles = new Vector3(0.0f, target_degrees, 0.0f);
+
+
 		float current_degrees = Mathf.Atan2(transform.forward.x, transform.forward.z) * Mathf.Rad2Deg;
 		float delta = Mathf.DeltaAngle(target_degrees, current_degrees);
 

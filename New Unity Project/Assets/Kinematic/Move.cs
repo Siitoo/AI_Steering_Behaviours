@@ -49,7 +49,7 @@ public class Move : MonoBehaviour {
 		}
 
 		// cap rotation
-		rotation = Mathf.Clamp(rotation, -max_rot_velocity, max_rot_velocity);
+		Mathf.Clamp(rotation, -max_rot_velocity, max_rot_velocity);
 
 		// rotate the arrow
 		float angle = Mathf.Atan2(movement.x, movement.z);
@@ -61,8 +61,7 @@ public class Move : MonoBehaviour {
 		// final rotate
 		transform.rotation *= Quaternion.AngleAxis(rotation * Time.deltaTime, Vector3.up);
 
-        // finally move
-        movement.y = 0.0f;
+		// finally move
 		transform.position += movement * Time.deltaTime;
 	}
 }

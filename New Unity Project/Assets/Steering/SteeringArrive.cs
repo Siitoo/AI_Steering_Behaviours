@@ -25,48 +25,35 @@ public class SteeringArrive : MonoBehaviour {
 		if(!move)
 			move = GetComponent<Move>();
 
-        // TODO 3: Create a vector to calculate our ideal velocity
-        // then calculate the acceleration needed to match that velocity
-        // before sending it to move.AccelerateMovement() clamp it to 
-        // move.max_mov_acceleration
+		// Velocity we are trying to match
+		float ideal_velocity = 0.0f;
+		Vector3 diff = target - transform.position;
 
-        /* Vector3 distance = move.target.transform.position - transform.position;
-         distance.y = 0;
-         distance.Normalize();
+		if(diff.magnitude < min_distance)
+			move.SetMovementVelocity(Vector3.zero);
 
-         Vector3 acceleration = distance;
-         float distance_to_target = Vector3.Distance(transform.position, target);
+		// Decide wich would be our ideal velocity
+		if(diff.magnitude > slow_distance)
+			ideal_velocity = move.max_mov_velocity;
+		else
+			ideal_velocity = move.max_mov_velocity * diff.magnitude / slow_distance;
 
-         if (distance_to_target <= slow_distance) 
-         {
-             Vector3 ideal_vector = move.movement.normalized * distance_to_target * time_to_target;
+		// Create a vector that describes the ideal velocity
+		Vector3 ideal_movement = diff.normalized * ideal_velocity;
 
-             acceleration = ideal_vector - move.movement * time_to_target;
+		// Calculate acceleration needed to match that velocity
+		Vector3 acceleration = ideal_movement - move.movement;
+		acceleration /= time_to_target;
 
-             if (distance_to_target <= min_distance)
-                acceleration = -move.movement;
-         }
+		// Cap acceleration
+		if(acceleration.magnitude > move.max_mov_acceleration)
+		{
+			acceleration.Normalize();
+			acceleration *= move.max_mov_acceleration;
+		}
 
-
-         move.AccelerateMovement(acceleration);*/
-
-        Vector3 desiredVelocity = target - transform.position;
-        float distance = desiredVelocity.magnitude;
-
-        if (distance < slow_distance)
-            desiredVelocity = Vector3.Normalize(desiredVelocity) * move.max_mov_velocity * (distance / slow_distance);
-        else
-            desiredVelocity = Vector3.Normalize(desiredVelocity) * move.max_mov_velocity;
-
-        Vector3 steering = desiredVelocity - move.movement;
-
-        move.AccelerateMovement(steering);
-
-    }
-
-
-
-
+		move.AccelerateMovement(acceleration);
+	}
 
 	void OnDrawGizmosSelected() 
 	{
